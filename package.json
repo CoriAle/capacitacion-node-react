@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-     "start":"node dist/index",
+    "start": "node dist/index",
     "debug": "nodemon dist/index",
     "webpack": "rm -rf dist && webpack --config webpack.config.ts",
     "build:prod": "rm -rf dist && webpack  --NODE_ENV=production --mode production --config webpack.config.prod.ts",
@@ -15,6 +15,7 @@
   "author": "Corina Nimatuj",
   "license": "ISC",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
     "config": "^3.3.1",
     "cors": "^2.8.5",
@@ -30,9 +31,11 @@
     "webpack-node-externals": "^2.5.2"
   },
   "devDependencies": {
+    "@types/bcryptjs": "^2.4.2",
     "@types/body-parser": "^1.19.0",
     "@types/config": "0.0.36",
     "@types/cors": "^2.8.7",
+    "@types/express": "^4.17.8",
     "@types/express-validator": "^3.0.0",
     "@types/helmet": "0.0.48",
     "@types/jsonwebtoken": "^8.5.0",

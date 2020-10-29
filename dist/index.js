@@ -22,7 +22,7 @@
 /******/
 /******/ 	var hotApplyOnUpdate = true;
 /******/ 	// eslint-disable-next-line no-unused-vars
-/******/ 	var hotCurrentHash = "cc98c4838af2fdb9f73a";
+/******/ 	var hotCurrentHash = "8a2c8a792b22d2b7761a";
 /******/ 	var hotRequestTimeout = 10000;
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule;
@@ -863,6 +863,30 @@ eval("\nvar __importDefault = (this && this.__importDefault) || function (mod) {
 
 /***/ }),
 
+/***/ "./src/controllers/auth.controller.ts":
+/*!********************************************!*\
+  !*** ./src/controllers/auth.controller.ts ***!
+  \********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nvar __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {\n    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }\n    return new (P || (P = Promise))(function (resolve, reject) {\n        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }\n        function rejected(value) { try { step(generator[\"throw\"](value)); } catch (e) { reject(e); } }\n        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }\n        step((generator = generator.apply(thisArg, _arguments || [])).next());\n    });\n};\nvar __importDefault = (this && this.__importDefault) || function (mod) {\n    return (mod && mod.__esModule) ? mod : { \"default\": mod };\n};\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst express_1 = __webpack_require__(/*! express */ \"express\");\nconst bcryptjs_1 = __importDefault(__webpack_require__(/*! bcryptjs */ \"bcryptjs\"));\nconst jsonwebtoken_1 = __importDefault(__webpack_require__(/*! jsonwebtoken */ \"jsonwebtoken\"));\nconst config_1 = __importDefault(__webpack_require__(/*! config */ \"config\"));\nconst user_1 = __importDefault(__webpack_require__(/*! ../models/user */ \"./src/models/user.ts\"));\nconst error_1 = __webpack_require__(/*! ../error */ \"./src/error.ts\");\nconst auth_validator_1 = __importDefault(__webpack_require__(/*! ../middlewares/validators/auth/auth.validator */ \"./src/middlewares/validators/auth/auth.validator.ts\"));\nconst validator_1 = __importDefault(__webpack_require__(/*! ../middlewares/validator */ \"./src/middlewares/validator.ts\"));\nconst router = express_1.Router();\nrouter.post('/', auth_validator_1.default, validator_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {\n    const { email, password } = req.body;\n    try {\n        let user = yield user_1.default.findOne({ email });\n        if (user) {\n            const isMatch = yield bcryptjs_1.default.compare(password, user.password);\n            if (!isMatch) {\n                const custom = new error_1.ErrorHandler(400, 'Invalid Credentials');\n                error_1.handleError(custom, req, res);\n            }\n            const payload = {\n                user: {\n                    id: user.id\n                }\n            };\n            jsonwebtoken_1.default.sign(payload, config_1.default.get('jwt_secret'), { expiresIn: 3600 }, (err, token) => {\n                if (err)\n                    throw err;\n                res.status(200);\n                res.json({ token });\n            });\n        }\n        else {\n            const custom = new error_1.ErrorHandler(400, 'Invalid User');\n            error_1.handleError(custom, req, res);\n        }\n    }\n    catch (err) {\n        console.log(err);\n        const custom = new error_1.ErrorHandler(500, 'Server Error');\n        error_1.handleError(custom, req, res);\n    }\n}));\nexports.default = router;\n\n\n//# sourceURL=webpack:///./src/controllers/auth.controller.ts?");
+
+/***/ }),
+
+/***/ "./src/controllers/contact.controller.ts":
+/*!***********************************************!*\
+  !*** ./src/controllers/contact.controller.ts ***!
+  \***********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nvar __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {\n    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }\n    return new (P || (P = Promise))(function (resolve, reject) {\n        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }\n        function rejected(value) { try { step(generator[\"throw\"](value)); } catch (e) { reject(e); } }\n        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }\n        step((generator = generator.apply(thisArg, _arguments || [])).next());\n    });\n};\nvar __importDefault = (this && this.__importDefault) || function (mod) {\n    return (mod && mod.__esModule) ? mod : { \"default\": mod };\n};\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst express_1 = __webpack_require__(/*! express */ \"express\");\nconst error_1 = __webpack_require__(/*! ../error */ \"./src/error.ts\");\nconst auth_midd_1 = __importDefault(__webpack_require__(/*! ../middlewares/auth/auth.midd */ \"./src/middlewares/auth/auth.midd.ts\"));\nconst contact_1 = __importDefault(__webpack_require__(/*! ../models/contact */ \"./src/models/contact.ts\"));\nconst router = express_1.Router();\nrouter.get('/', auth_midd_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {\n    var _a;\n    try {\n        const contacts = yield contact_1.default.find({ user: (_a = req.user) === null || _a === void 0 ? void 0 : _a.id }).sort({ date: -1 });\n        return res.status(200).json({\n            data: contacts,\n            msj: 'List of contacts'\n        });\n    }\n    catch (err) {\n        console.log(err);\n        const custom = new error_1.ErrorHandler(500, 'Server Error');\n        error_1.handleError(custom, req, res);\n    }\n}));\nrouter.post('/', auth_midd_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {\n    var _b;\n    try {\n        const { name, email, phone, type, } = req.body;\n        console.log(name);\n        const newContact = new contact_1.default({\n            name,\n            email,\n            phone,\n            type,\n            user: (_b = req.user) === null || _b === void 0 ? void 0 : _b.id,\n        });\n        const contact = yield newContact.save();\n        return res.status(201).json({\n            data: contact,\n            msj: \"Contact created\"\n        });\n    }\n    catch (err) {\n        console.log(err);\n        const custom = new error_1.ErrorHandler(500, 'Server Error');\n        error_1.handleError(custom, req, res);\n    }\n}));\nrouter.put('/', auth_midd_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {\n    var _c;\n    try {\n        const { name, email, phone, type } = req.body;\n        const contactFields = {};\n        if (name)\n            contactFields.name = name;\n        if (email)\n            contactFields.email = email;\n        if (phone)\n            contactFields.phone = phone;\n        if (type)\n            contactFields.type = type;\n        let contact = yield contact_1.default.findById(req.query.id);\n        if (!contact) {\n            const custom = new error_1.ErrorHandler(500, 'Server Error');\n            error_1.handleError(custom, req, res);\n        }\n        // One user only can update his constacts\n        if ((contact === null || contact === void 0 ? void 0 : contact.user.toString()) !== ((_c = req.user) === null || _c === void 0 ? void 0 : _c.id)) {\n            const custom = new error_1.ErrorHandler(401, 'Not Authorized');\n            error_1.handleError(custom, req, res);\n        }\n        contact = yield contact_1.default.findByIdAndUpdate(req.query.id, { $set: contactFields }, { new: true });\n        return res.status(200).json({\n            data: contact,\n            msj: 'Contact updated',\n        });\n    }\n    catch (error) {\n        console.log(error);\n        const custom = new error_1.ErrorHandler(500, 'Server Error');\n        error_1.handleError(custom, req, res);\n    }\n}));\nrouter.delete('/:id', auth_midd_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {\n    var _d;\n    try {\n        let contact = yield contact_1.default.findById(req.params.id);\n        if (!contact) {\n            const custom = new error_1.ErrorHandler(404, 'Contact not found');\n            error_1.handleError(custom, req, res);\n        }\n        // One user only can delete his owns constacts\n        if ((contact === null || contact === void 0 ? void 0 : contact.user.toString()) !== ((_d = req.user) === null || _d === void 0 ? void 0 : _d.id)) {\n            const custom = new error_1.ErrorHandler(401, 'Not Authorized');\n            error_1.handleError(custom, req, res);\n        }\n        yield contact_1.default.findByIdAndRemove(req.params.id);\n        return res.status(200).json({\n            data: contact,\n            msj: 'Contact Removed',\n        });\n    }\n    catch (error) {\n        const custom = new error_1.ErrorHandler(500, 'Server Error');\n        error_1.handleError(custom, req, res);\n    }\n}));\nexports.default = router;\n\n\n//# sourceURL=webpack:///./src/controllers/contact.controller.ts?");
+
+/***/ }),
+
 /***/ "./src/controllers/health.controller.ts":
 /*!**********************************************!*\
   !*** ./src/controllers/health.controller.ts ***!
@@ -875,6 +899,30 @@ eval("\nvar __importDefault = (this && this.__importDefault) || function (mod) {
 
 /***/ }),
 
+/***/ "./src/controllers/user.controller.ts":
+/*!********************************************!*\
+  !*** ./src/controllers/user.controller.ts ***!
+  \********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nvar __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {\n    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }\n    return new (P || (P = Promise))(function (resolve, reject) {\n        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }\n        function rejected(value) { try { step(generator[\"throw\"](value)); } catch (e) { reject(e); } }\n        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }\n        step((generator = generator.apply(thisArg, _arguments || [])).next());\n    });\n};\nvar __importDefault = (this && this.__importDefault) || function (mod) {\n    return (mod && mod.__esModule) ? mod : { \"default\": mod };\n};\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst express_1 = __webpack_require__(/*! express */ \"express\");\nconst bcryptjs_1 = __importDefault(__webpack_require__(/*! bcryptjs */ \"bcryptjs\"));\nconst jsonwebtoken_1 = __importDefault(__webpack_require__(/*! jsonwebtoken */ \"jsonwebtoken\"));\nconst config_1 = __importDefault(__webpack_require__(/*! config */ \"config\"));\nconst user_1 = __importDefault(__webpack_require__(/*! ../models/user */ \"./src/models/user.ts\"));\nconst error_1 = __webpack_require__(/*! ../error */ \"./src/error.ts\");\nconst router = express_1.Router();\nrouter.post('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {\n    console.log(req.body);\n    const { name, email, password } = req.body;\n    try {\n        let user = yield user_1.default.findOne({ email });\n        if (user) {\n            const custom = new error_1.ErrorHandler(400, 'User already exists');\n            error_1.handleError(custom, req, res);\n        }\n        user = new user_1.default({\n            name,\n            email,\n            password\n        });\n        const salt = yield bcryptjs_1.default.genSalt(10);\n        user.password = yield bcryptjs_1.default.hash(password, salt);\n        yield user.save();\n        const payload = {\n            user: {\n                id: user.id,\n            },\n        };\n        jsonwebtoken_1.default.sign(payload, config_1.default.get('jwt_secret'), { expiresIn: 360000 }, (err, token) => {\n            if (err)\n                throw err;\n            res.status(200).json({\n                data: { token, user },\n                msj: 'User Created',\n            });\n        });\n    }\n    catch (err) {\n        console.log(err);\n        const custom = new error_1.ErrorHandler(500, 'Server Error');\n        error_1.handleError(custom, req, res);\n    }\n}));\nexports.default = router;\n\n\n//# sourceURL=webpack:///./src/controllers/user.controller.ts?");
+
+/***/ }),
+
+/***/ "./src/error.ts":
+/*!**********************!*\
+  !*** ./src/error.ts ***!
+  \**********************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nexports.handleError = exports.ErrorHandler = void 0;\nconst express_validator_1 = __webpack_require__(/*! express-validator */ \"express-validator\");\nclass ErrorHandler extends Error {\n    constructor(statusCode, message) {\n        super();\n        this.statusCode = 0;\n        this.statusCode = statusCode;\n        this.message = message; //Hereado de error\n    }\n}\nexports.ErrorHandler = ErrorHandler;\nexports.handleError = (err, req, res) => {\n    const { statusCode, message } = err;\n    const errors = express_validator_1.validationResult(req);\n    res.status(statusCode).json({\n        status: err.name,\n        statusCode,\n        message,\n        errors: !errors.isEmpty() ? errors.array() : null,\n    });\n};\n\n\n//# sourceURL=webpack:///./src/error.ts?");
+
+/***/ }),
+
 /***/ "./src/index.ts":
 /*!**********************!*\
   !*** ./src/index.ts ***!
@@ -883,7 +931,79 @@ eval("\nvar __importDefault = (this && this.__importDefault) || function (mod) {
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-eval("\nvar __importDefault = (this && this.__importDefault) || function (mod) {\n    return (mod && mod.__esModule) ? mod : { \"default\": mod };\n};\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst config_1 = __importDefault(__webpack_require__(/*! config */ \"config\"));\nconst app_1 = __importDefault(__webpack_require__(/*! ./app */ \"./src/app.ts\"));\nlet port = config_1.default.get('port'); // lo que estè en el archivo de config, dependiento del environment\nif (config_1.default.util.getEnv('NODE_ENV') === 'production') {\n    port = process.env.PORT;\n}\nif (!port) {\n    process.exit(1);\n}\nconst PORT = parseInt(port, 10);\nconst server = app_1.default.listen(PORT, () => {\n    console.log(`Listening on port ${PORT}`);\n});\nif (true) {\n    module.hot.accept();\n    module.hot.dispose(() => server.close());\n}\n\n\n//# sourceURL=webpack:///./src/index.ts?");
+eval("\nvar __importDefault = (this && this.__importDefault) || function (mod) {\n    return (mod && mod.__esModule) ? mod : { \"default\": mod };\n};\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst config_1 = __importDefault(__webpack_require__(/*! config */ \"config\"));\nconst app_1 = __importDefault(__webpack_require__(/*! ./app */ \"./src/app.ts\"));\nconst db_1 = __importDefault(__webpack_require__(/*! ./repositories/db */ \"./src/repositories/db.ts\"));\nlet port = config_1.default.get('port'); // lo que estè en el archivo de config, dependiento del environment\nif (config_1.default.util.getEnv('NODE_ENV') === 'production') {\n    port = process.env.PORT;\n}\nif (!port) {\n    process.exit(1);\n}\nconst PORT = parseInt(port, 10);\nconst db_connection = new db_1.default();\ndb_connection.connect_db();\nconst server = app_1.default.listen(PORT, () => {\n    console.log(`Listening on port ${PORT}`);\n});\nif (true) {\n    module.hot.accept();\n    module.hot.dispose(() => server.close());\n}\n\n\n//# sourceURL=webpack:///./src/index.ts?");
+
+/***/ }),
+
+/***/ "./src/middlewares/auth/auth.midd.ts":
+/*!*******************************************!*\
+  !*** ./src/middlewares/auth/auth.midd.ts ***!
+  \*******************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nvar __importDefault = (this && this.__importDefault) || function (mod) {\n    return (mod && mod.__esModule) ? mod : { \"default\": mod };\n};\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst error_1 = __webpack_require__(/*! ../../error */ \"./src/error.ts\");\nconst jsonwebtoken_1 = __importDefault(__webpack_require__(/*! jsonwebtoken */ \"jsonwebtoken\"));\nconst config_1 = __importDefault(__webpack_require__(/*! config */ \"config\"));\nconst auth_token = (req, res, next) => {\n    const token = String(req.get('x-auth-token'));\n    console.log(token);\n    if (!token) {\n        const custom = new error_1.ErrorHandler(401, 'No token authorization denied');\n        error_1.handleError(custom, req, res);\n        return;\n    }\n    try {\n        const decoded = jsonwebtoken_1.default.decode(token, config_1.default.get('jwt_secret'));\n        req.user = decoded.user;\n        next();\n    }\n    catch (err) {\n        const custom = new error_1.ErrorHandler(401, 'Token is not valid');\n        error_1.handleError(custom, req, res);\n        return;\n    }\n};\nexports.default = auth_token;\n\n\n//# sourceURL=webpack:///./src/middlewares/auth/auth.midd.ts?");
+
+/***/ }),
+
+/***/ "./src/middlewares/validator.ts":
+/*!**************************************!*\
+  !*** ./src/middlewares/validator.ts ***!
+  \**************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst express_validator_1 = __webpack_require__(/*! express-validator */ \"express-validator\");\nconst error_1 = __webpack_require__(/*! ../error */ \"./src/error.ts\");\nconst validationHandler = (req, res, next) => {\n    //Validar errores en el request\n    const errors = express_validator_1.validationResult(req);\n    if (errors.isEmpty()) {\n        return next(); //No hay errores entonces continuar al controller\n    }\n    const err = new error_1.ErrorHandler(400, 'Invalid field');\n    error_1.handleError(err, req, res);\n};\nexports.default = validationHandler;\n\n\n//# sourceURL=webpack:///./src/middlewares/validator.ts?");
+
+/***/ }),
+
+/***/ "./src/middlewares/validators/auth/auth.validator.ts":
+/*!***********************************************************!*\
+  !*** ./src/middlewares/validators/auth/auth.validator.ts ***!
+  \***********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst express_validator_1 = __webpack_require__(/*! express-validator */ \"express-validator\");\nconst validations = [\n    express_validator_1.body('password').exists().withMessage('Password is required'),\n    express_validator_1.body('email').exists().withMessage('Email is required'),\n    express_validator_1.body('email').if(express_validator_1.body('email').exists()).isEmail().withMessage('Invalid Email Format')\n];\nexports.default = validations;\n\n\n//# sourceURL=webpack:///./src/middlewares/validators/auth/auth.validator.ts?");
+
+/***/ }),
+
+/***/ "./src/models/contact.ts":
+/*!*******************************!*\
+  !*** ./src/models/contact.ts ***!
+  \*******************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst mongoose_1 = __webpack_require__(/*! mongoose */ \"mongoose\");\nconst ContactSchema = new mongoose_1.Schema({\n    user: {\n        type: mongoose_1.Schema.Types.ObjectId,\n        ref: 'user'\n    },\n    name: {\n        type: String,\n        required: true,\n    },\n    email: {\n        type: String,\n        required: true\n    },\n    phone: {\n        type: String,\n    },\n    type: {\n        type: String,\n        default: 'persona'\n    },\n    date: {\n        type: Date,\n        default: Date.now\n    }\n});\nexports.default = mongoose_1.model('Contact', ContactSchema);\n\n\n//# sourceURL=webpack:///./src/models/contact.ts?");
+
+/***/ }),
+
+/***/ "./src/models/user.ts":
+/*!****************************!*\
+  !*** ./src/models/user.ts ***!
+  \****************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst mongoose_1 = __webpack_require__(/*! mongoose */ \"mongoose\");\nconst UserSchema = new mongoose_1.Schema({\n    name: {\n        type: String,\n        required: true\n    },\n    email: {\n        type: String,\n        required: true,\n        unique: true\n    },\n    password: {\n        type: String,\n        required: true\n    },\n    date: {\n        type: Date,\n        default: Date.now\n    }\n});\nexports.default = mongoose_1.model('User', UserSchema);\n\n\n//# sourceURL=webpack:///./src/models/user.ts?");
+
+/***/ }),
+
+/***/ "./src/repositories/db.ts":
+/*!********************************!*\
+  !*** ./src/repositories/db.ts ***!
+  \********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nvar __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {\n    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }\n    return new (P || (P = Promise))(function (resolve, reject) {\n        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }\n        function rejected(value) { try { step(generator[\"throw\"](value)); } catch (e) { reject(e); } }\n        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }\n        step((generator = generator.apply(thisArg, _arguments || [])).next());\n    });\n};\nvar __importDefault = (this && this.__importDefault) || function (mod) {\n    return (mod && mod.__esModule) ? mod : { \"default\": mod };\n};\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst mongoose_1 = __importDefault(__webpack_require__(/*! mongoose */ \"mongoose\"));\nconst config_1 = __importDefault(__webpack_require__(/*! config */ \"config\"));\nconst data_base = config_1.default.get('data_base');\nclass DB_Connection {\n    constructor() {\n        this.connect_db = () => __awaiter(this, void 0, void 0, function* () {\n            try {\n                yield mongoose_1.default.connect(data_base.mongo_uri, {\n                    useNewUrlParser: true,\n                    useCreateIndex: true,\n                    useFindAndModify: true,\n                    useUnifiedTopology: true // Monitorieo\n                });\n                console.log('Mongo Connected');\n            }\n            catch (err) {\n                console.log(err);\n                process.exit();\n            }\n        });\n    }\n}\nexports.default = DB_Connection;\n\n\n//# sourceURL=webpack:///./src/repositories/db.ts?");
 
 /***/ }),
 
@@ -895,7 +1015,7 @@ eval("\nvar __importDefault = (this && this.__importDefault) || function (mod) {
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-eval("\nvar __importDefault = (this && this.__importDefault) || function (mod) {\n    return (mod && mod.__esModule) ? mod : { \"default\": mod };\n};\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst health_controller_1 = __importDefault(__webpack_require__(/*! ./controllers/health.controller */ \"./src/controllers/health.controller.ts\"));\nconst routes = (app) => {\n    app.use('/v1/health', health_controller_1.default);\n};\nexports.default = routes;\n\n\n//# sourceURL=webpack:///./src/routes.ts?");
+eval("\nvar __importDefault = (this && this.__importDefault) || function (mod) {\n    return (mod && mod.__esModule) ? mod : { \"default\": mod };\n};\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst health_controller_1 = __importDefault(__webpack_require__(/*! ./controllers/health.controller */ \"./src/controllers/health.controller.ts\"));\nconst user_controller_1 = __importDefault(__webpack_require__(/*! ./controllers/user.controller */ \"./src/controllers/user.controller.ts\"));\nconst auth_controller_1 = __importDefault(__webpack_require__(/*! ./controllers/auth.controller */ \"./src/controllers/auth.controller.ts\"));\nconst contact_controller_1 = __importDefault(__webpack_require__(/*! ./controllers/contact.controller */ \"./src/controllers/contact.controller.ts\"));\nconst routes = (app) => {\n    app.use('/v1/health', health_controller_1.default);\n    app.use('/v1/user', user_controller_1.default);\n    app.use('/v1/auth', auth_controller_1.default);\n    app.use('/v1/contact', contact_controller_1.default);\n};\nexports.default = routes;\n\n\n//# sourceURL=webpack:///./src/routes.ts?");
 
 /***/ }),
 
@@ -907,6 +1027,17 @@ eval("\nvar __importDefault = (this && this.__importDefault) || function (mod) {
 /***/ (function(module, exports, __webpack_require__) {
 
 eval("__webpack_require__(/*! webpack/hot/poll?100 */\"./node_modules/webpack/hot/poll.js?100\");\nmodule.exports = __webpack_require__(/*! ./src/index.ts */\"./src/index.ts\");\n\n\n//# sourceURL=webpack:///multi_webpack/hot/poll?");
+
+/***/ }),
+
+/***/ "bcryptjs":
+/*!***************************!*\
+  !*** external "bcryptjs" ***!
+  \***************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("module.exports = require(\"bcryptjs\");\n\n//# sourceURL=webpack:///external_%22bcryptjs%22?");
 
 /***/ }),
 
@@ -954,6 +1085,17 @@ eval("module.exports = require(\"express\");\n\n//# sourceURL=webpack:///externa
 
 /***/ }),
 
+/***/ "express-validator":
+/*!************************************!*\
+  !*** external "express-validator" ***!
+  \************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("module.exports = require(\"express-validator\");\n\n//# sourceURL=webpack:///external_%22express-validator%22?");
+
+/***/ }),
+
 /***/ "helmet":
 /*!*************************!*\
   !*** external "helmet" ***!
@@ -962,6 +1104,28 @@ eval("module.exports = require(\"express\");\n\n//# sourceURL=webpack:///externa
 /***/ (function(module, exports) {
 
 eval("module.exports = require(\"helmet\");\n\n//# sourceURL=webpack:///external_%22helmet%22?");
+
+/***/ }),
+
+/***/ "jsonwebtoken":
+/*!*******************************!*\
+  !*** external "jsonwebtoken" ***!
+  \*******************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("module.exports = require(\"jsonwebtoken\");\n\n//# sourceURL=webpack:///external_%22jsonwebtoken%22?");
+
+/***/ }),
+
+/***/ "mongoose":
+/*!***************************!*\
+  !*** external "mongoose" ***!
+  \***************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("module.exports = require(\"mongoose\");\n\n//# sourceURL=webpack:///external_%22mongoose%22?");
 
 /***/ })
 

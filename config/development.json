@@ -1,5 +1,8 @@
 {
 	"port": 5000,
-	"environment": "Development"
+	"environment": "Development",
+	"data_base": {
+		"mongo_uri": "mongodb+srv://sa:database1@cluster0.jnp0s.mongodb.net/<dbname>?retryWrites=true&w=majority"
+	}
 
 }

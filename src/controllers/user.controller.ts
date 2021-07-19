@@ -8,9 +8,12 @@ import auth_token from '../middlewares/auth/auth.midd'
 const router = Router();
 
 
-router.post('/',
+import bodyValidatior from '../middlewares/validators/auth/auth.validator';
+import validationsHandler from '../middlewares/validator';
+
+router.post('/',  bodyValidatior, validationsHandler,
   async (req: Request, res: Response) => {
-  console.log(req.body)
+  //console.log(req.body)
   const { name, email, password } = req.body;
   try {
     let user = await User.findOne({ email });
@@ -44,7 +47,7 @@ router.post('/',
 
 
   } catch (err) {
-    console.log(err);
+    //console.log(err);
     const custom = new ErrorHandler(500, 'Server Error');
     handleError(custom, req, res);
   }

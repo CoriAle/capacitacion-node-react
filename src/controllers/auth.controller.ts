@@ -43,7 +43,7 @@ router.post('/', bodyValidatior, validationsHandler, async(req:Request, res: Res
 		}
 	}
 	catch (err) {
-		console.log(err);
+		// console.log(err);
     	const custom = new ErrorHandler(500, 'Server Error');
     	handleError(custom, req, res);
 	}

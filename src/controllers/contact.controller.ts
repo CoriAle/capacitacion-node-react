@@ -28,7 +28,7 @@ router.post('/', auth_token, async(req: Request, res: Response)=>{
 			phone,
 			type,
 		} = req.body;
-		console.log(name);
+		//console.log(name);
 		const newContact = new Contact({
 			name,
 			email,

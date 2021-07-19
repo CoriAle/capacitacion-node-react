@@ -1,0 +1,9 @@
+{
+	"port": 5000,
+	"environment": "Test",
+	"jwt_secret": "this_is_a_top_secret",
+	"data_base": {
+		"mongo_uri": ""
+	}
+
+}

@@ -6,7 +6,6 @@ import config from 'config';
 
 const auth_token = (req: Request ,res: Response, next: NextFunction) => {
 	const token = String(req.get('x-auth-token'));
-	console.log(token);
 	if(!token){
 		const custom = new ErrorHandler(401, 'No token authorization denied');
 		handleError(custom, req, res);
